@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbxRojoON2RpbvfayaYcCvvrAB1p2MAk5d_tQzM2NcoO1uMkM2kgh8qSEomsDmodb1RJbA/exec';
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbxYojoON2RpbvfayaYcCvpgAB1p2MAk5d_tWRk2fco_uvkMbPIgh8SEomsdCmodb1RJbA/exec';
     const response = await fetch(scriptUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
