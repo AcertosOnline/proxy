@@ -15,11 +15,16 @@ app.post('/proxy', async (req, res) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req.body),
-      timeout: 8000,
+      timeout: 12000
     });
     const data = await response.json();
-    res.status(response.status).json(data);
+    if (!response.ok) {
+      console.error('GAS Error:', data);
+      return res.status(response.status).json(data);
+    }
+    res.status(200).json(data);
   } catch (error) {
+    console.error('Proxy Error:', error.message);
     res.status(500).json({ error: 'Erro ao encaminhar a requisição: ' + error.message });
   }
 });
