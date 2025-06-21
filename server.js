@@ -5,23 +5,39 @@ const fetch = require('node-fetch');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: 'https://77xxbrasil.com' }));
+// Configure CORS to allow requests from https://77xxbrasil.com
+app.use(cors({
+  origin: 'https://77xxbrasil.com',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  credentials: false
+}));
+
+// Handle preflight OPTIONS requests
+app.options('*', cors());
+
 app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbxYojoON2RpbvfayaYcCvpgAB1p2MAk5d_tWRk2fco_uvkMbPIgh8SEomsdCmodb1RJbA/exec';
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbxRojoON2RpbvfayaYcCvvrAB1p2MAk5d_tQzM2NcoO1uMkM2kgh8qSEomsDmodb1RJbA/exec';
     const response = await fetch(scriptUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req.body),
       timeout: 12000 // 12 seconds
     });
-    const data = await response.json();
+    const text = await response.text();
     if (!response.ok) {
-      console.error('GAS Error:', JSON.stringify(data));
-      return res.status(response.status).json(data);
+      console.error('GAS Response:', text);
+      try {
+        const data = JSON.parse(text);
+        return res.status(response.status).json(data);
+      } catch (e) {
+        return res.status(response.status).json({ error: 'Invalid response from GAS', rawResponse: text });
+      }
     }
+    const data = JSON.parse(text);
     res.status(200).json(data);
   } catch (error) {
     console.error('Proxy Error:', error.message, error.stack);
