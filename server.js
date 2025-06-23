@@ -25,7 +25,7 @@ app.post('/proxy', async (req, res) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req.body),
-      timeout: 30000
+      timeout: 90000
     });
     const text = await response.text();
     if (!response.ok) {
